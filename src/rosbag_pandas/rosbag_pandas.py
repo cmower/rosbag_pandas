@@ -7,6 +7,7 @@ import numpy as np
 import pandas as pd
 import rosbag
 from rospy_message_converter.message_converter import convert_ros_message_to_dictionary
+from progressbar import progressbar
 
 
 class RosbagPandaException(Exception):
@@ -63,7 +64,9 @@ def bag_to_dataframe(bag_name, include=None, exclude=None):
     index = np.empty(df_length)
     index.fill(np.NAN)
     data_dict = {}
-    for idx, (topic, msg, t) in enumerate(bag.read_messages(topics=topics)):
+    messages = [d for d in bag.read_messages(topics=topics)]
+    idx = 0
+    for topic, msg, t in progressbar(messages):
         flattened_dict = _get_flattened_dictionary_from_ros_msg(msg)
         for key, item in flattened_dict.items():
             data_key = topic + "/" + key
@@ -75,6 +78,7 @@ def bag_to_dataframe(bag_name, include=None, exclude=None):
                     data_dict[data_key] = np.empty(df_length, dtype=np.object)
             data_dict[data_key][idx] = item
         index[idx] = t.to_sec()
+        idx += 1
 
     bag.close()
 
