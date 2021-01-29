@@ -18,6 +18,7 @@
   <exec_depend>rosbag</exec_depend>
   <exec_depend>rospy_message_converter</exec_depend>
   <exec_depend>roslib</exec_depend>
+  <exec_depend>python-progressbar2-pip</exec_depend>
 
   <buildtool_depend>catkin</buildtool_depend>
 </package>
